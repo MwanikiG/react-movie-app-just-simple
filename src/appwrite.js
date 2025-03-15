@@ -1,10 +1,14 @@
 import { Client, Databases, ID, Query } from "appwrite"
 
+
+const ENDPOINT_URL = import.meta.env.VITE_APPWRITE_ENDPOINT_URL
 const DATABASE_ID = import.meta.env.VITE_APPWRITE_DATABASE_ID
 const COLLECTION_ID = import.meta.env.VITE_APPWRITE_COLLECTION_ID
 const PROJECT_ID = import.meta.env.VITE_APPWRITE_PROJECT_ID
 
-const client = new Client().setEndpoint('https://cloud.appwrite.io/').setProject(PROJECT_ID)
+const client = new Client()
+.setEndpoint(ENDPOINT_URL)
+.setProject(PROJECT_ID)
 
 const database = new Databases(client);
 
@@ -33,6 +37,20 @@ export const updateSearchCount = async (searchTerm, movie) => {
     } catch (error) {
         console.error(error);
         
+        
+    }
+}
+
+export const getTrendingMovies = async () => {
+    try {
+        const result = await database.listDocuments(DATABASE_ID, COLLECTION_ID, [
+            Query.limit(5),
+            Query.orderDesc("count"),
+        ])
+
+        return result.documents;
+    } catch (error) {
+        console.error(error);
         
     }
 }
